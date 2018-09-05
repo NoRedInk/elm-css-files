@@ -3,93 +3,82 @@
 const _ = require("lodash"),
   path = require("path"),
   firstline = require("firstline"),
-  installReadElmi = require("../installer"),
+  readElmiPath = require("elmi-to-json").paths["elmi-to-json"],
   finder = require("./read-exposed.js"),
   fs = require("fs-extra"),
   spawn = require("cross-spawn");
 
 function findExposedValues(
   types /*: Array<string>*/,
-  readElmiPath /*: string*/,
   elmPackageJsonPath /*: string*/,
   elmFilePaths /*: Array<string>*/,
   sourceDirs /*: Array<string>*/,
   verbose /*: boolean*/
 ) {
   return new Promise(function(resolve, reject) {
-    function finish() {
-      var process = spawn(readElmiPath, ["--path", elmPackageJsonPath]);
-      var jsonStr = "";
-      var stderrStr = "";
+    var process = spawn(readElmiPath, [], { cwd: elmPackageJsonPath });
+    var jsonStr = "";
+    var stderrStr = "";
 
-      process.stdout.on("data", function(data) {
-        jsonStr += data;
-      });
+    process.stdout.on("data", function(data) {
+      jsonStr += data;
+    });
 
-      process.stderr.on("data", function(data) {
-        stderrStr += data;
-      });
+    process.stderr.on("data", function(data) {
+      stderrStr += data;
+    });
 
-      process.on("close", function(code) {
-        if (stderrStr !== "") {
-          reject(stderrStr);
-        } else if (code !== 0) {
-          reject("Finding test interfaces failed, exiting with code " + code);
-        }
+    process.on("close", function(code) {
+      if (stderrStr !== "") {
+        reject(stderrStr);
+      } else if (code !== 0) {
+        reject("Finding test interfaces failed, exiting with code " + code);
+      }
 
-        var modules;
+      var modules;
 
-        try {
-          modules = JSON.parse(jsonStr);
-        } catch (err) {
-          reject("Received invalid JSON from test interface search: " + err);
-        }
+      try {
+        modules = JSON.parse(jsonStr);
+      } catch (err) {
+        reject("Received invalid JSON from test interface search: " + err);
+      }
 
-        var filteredModules = _.flatMap(modules, function(mod) {
-          var eligible = _.flatMap(mod.types, function(typ) {
-            if (types.indexOf(typ.signature) === -1) {
-              return [];
-            } else {
-              return { name: typ.name, signature: typ.signature };
-            }
-          });
-
-          // Must have at least 1 relevant exposed value. Otherwise ignore this module.
-          if (eligible.length > 0) {
-            return [{ name: mod.moduleName, values: eligible }];
-          } else {
+      var filteredModules = _.flatMap(modules, function(mod) {
+        var eligible = _.flatMap(_.toPairs(mod.interface.types), function(pair) {
+          var name = pair[0];
+          var annotation = pair[1].annotation;
+          var signature = annotation.module + '.' + annotation.name
+          if (types.indexOf(signature) === -1) {
             return [];
+          } else {
+            return { name: typ.name, signature: typ.signature };
           }
         });
 
-        return verifyModules(elmFilePaths)
-          .then(function() {
-            return Promise.all(
-              _.map(
-                _.flatMap(
-                  filteredModules,
-                  toPathsAndModules(elmFilePaths, sourceDirs)
-                ),
-                filterExposing
-              )
-            )
-              .then(resolve)
-              .catch(reject);
-          })
-          .catch(reject);
+        // Must have at least 1 value of type Test. Otherwise ignore this module.
+        if (eligible.length > 0) {
+          return [{ name: mod.moduleName, values: eligible }];
+        } else {
+          return [];
+        }
       });
-    }
 
-    if (fs.existsSync(readElmiPath)) {
-      // elm-interface-to-json was already downloaded successfully. We're good!
-      return finish();
-    } else {
-      // it wasn't downloaded, possibly because we were installed with
-      // --ignore-scripts - so download it!
-      return installReadElmi(verbose)
-        .then(finish)
+      return verifyModules(elmFilePaths)
+        .then(function() {
+          return Promise.all(
+            _.map(
+              _.flatMap(
+                filteredModules,
+                toPathsAndModules(elmFilePaths, sourceDirs)
+              ),
+              filterExposing
+            )
+          )
+            .then(resolve)
+            .catch(reject);
+        })
         .catch(reject);
-    }
+    });
   });
 }
 

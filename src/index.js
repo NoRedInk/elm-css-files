@@ -16,14 +16,12 @@ const _ = require("lodash"),
   hackMain = require("./hack-main.js");
 
 const binaryExtension = process.platform === "win32" ? ".exe" : "";
-const readElmiPath =
-  path.join(__dirname, "bin", "elm-interface-to-json") + binaryExtension;
 const jsEmitterFilename = "emitter.js";
 
 module.exports = function(
   projectDir /*: string*/,
   outputDir /*: string */,
-  pathToMake /*: ?string */
+  pathToElm /*: ?string */
 ) {
   const cssSourceDir = path.join(projectDir, "css");
   const cssElmPackageJson = path.join(cssSourceDir, "elm-package.json");
@@ -76,19 +74,16 @@ module.exports = function(
   });
 
   return Promise.all([
-    writeGeneratedElmPackage(generatedDir, generatedSrc, cssSourceDir),
+    writeGeneratedElmPackage(pathToElm, generatedDir, generatedSrc, cssSourceDir),
     makeGeneratedSrcDir,
-    compileAll(pathToMake, cssSourceDir, elmFilePaths)
+    compileAll(pathToElm, cssSourceDir, elmFilePaths)
   ]).then(function(promiseOutputs) {
-    const repository /*: string */ = promiseOutputs[0];
-
     return findExposedValues(
       [
-        "DEPRECATED.Css.File.UniqueClass",
-        "DEPRECATED.Css.File.UniqueSvgClass",
+        "Css.File.UniqueClass",
+        "Css.File.UniqueSvgClass",
         "Css.Global.Snippet"
       ],
-      readElmiPath,
       generatedDir,
       elmFilePaths,
       [cssSourceDir],
@@ -103,10 +98,9 @@ module.exports = function(
       ).then(function() {
         return emit(
           mainFilename,
-          repository,
           path.join(generatedDir, jsEmitterFilename),
           generatedDir,
-          pathToMake
+          pathToElm
         ).then(writeResults(outputDir));
       });
     });
@@ -115,20 +109,18 @@ module.exports = function(
 
 function emit(
   src /*: string */,
-  repository /*: string */,
   dest /*: string */,
   cwd /*: string */,
-  pathToMake /*: ?string */
+  pathToElm /*: ?string */
 ) {
   // Compile the js file.
   return compileEmitter(src, {
     output: dest,
-    yes: true,
     cwd: cwd,
-    pathToMake: pathToMake
+    pathToElm: pathToElm
   })
     .then(function() {
-      return hackMain(repository, dest);
+      return hackMain(dest);
     })
     .then(function() {
       return extractCssResults(dest);
