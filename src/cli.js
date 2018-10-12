@@ -19,7 +19,7 @@ program
   .option("-m, --pathToMake [pathToMake]", "(optional) path to elm-make")
   .parse(process.argv);
 
-const headline = "elm-css " + pkg.version;
+const headline = "elm-css-files " + pkg.version;
 const bar = _.repeat("-", headline.length);
 
 console.log("\n" + headline + "\n" + bar + "\n");

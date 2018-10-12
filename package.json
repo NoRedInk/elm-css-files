@@ -4,7 +4,7 @@
   "description": "CLI to generate .css files from elm-css code.",
   "main": "src/index.js",
   "bin": {
-    "elm-css": "./src/cli.js"
+    "elm-css-files": "./src/cli.js"
   },
   "directories": {
     "test": "tests"

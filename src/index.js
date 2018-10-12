@@ -38,7 +38,7 @@ module.exports = function(
     "elm-stuff",
     "generated-code",
     "rtfeldman",
-    "elm-css"
+    "elm-css-files"
   );
 
   // Symlink our existing elm-stuff into the generated code,
