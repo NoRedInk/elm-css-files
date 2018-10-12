@@ -1,4 +1,4 @@
-module Css.File exposing (..)
+module Css.File exposing (UniqueClass(..), UniqueSvgClass(..), uniqueClass, uniqueSvgClass)
 
 import Css exposing (Style)
 
@@ -10,7 +10,8 @@ type UniqueClass
 
 
 {-| Styles scoped under an automatically-generated class. Use these for <svg>
-elements, as they use a different
+elements, as they require a different mechanism for specifying their class
+which is not compatible with the way non-SVG elements do it.
 -}
 type UniqueSvgClass
     = UniqueSvgClass (List Style)
