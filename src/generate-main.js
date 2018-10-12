@@ -88,8 +88,8 @@ function generateStylesheet(modul /*: ModuleDeclaration */) {
     switch (value.signature) {
       case "Css.Global.Snippet":
         return modul.name + "." + value.name;
-      case "DEPRECATED.Css.File.UniqueClass":
-      case "DEPRECATED.Css.File.UniqueSvgClass":
+      case "Css.File.UniqueClass":
+      case "Css.File.UniqueSvgClass":
         const className = classNameForValue(modul.name, value.name);
 
         return (
