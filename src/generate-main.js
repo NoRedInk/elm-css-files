@@ -45,8 +45,8 @@ function generateMain(modules /*: Array<ModuleDeclaration> */) {
     .join("\n");
 
   const fileStructure =
-    "fileStructure : FileStructure\n" +
-    "fileStructure =\n" +
+    "getFileStructure : () -> FileStructure\n" +
+    "getFileStructure () =\n" +
     "    [ " +
     modules.map(generateModule).join("\n        , ") +
     "\n        ]";
@@ -62,7 +62,7 @@ function generateMain(modules /*: Array<ModuleDeclaration> */) {
     // startup. We need it to be delayed by 1 tick so we have a chance for
     // hack-main.js to take effect first!
     "    Platform.worker\n" +
-    "        { init = \\flags -> ( (), files fileStructure )\n" +
+    "        { init = \\flags -> ( (), files (getFileStructure ()) )\n" +
     "        , update = \\_ _ -> ( (), Cmd.none )\n" +
     "        , subscriptions = \\_ -> Sub.none\n" +
     "        }\n\n\n" +
