@@ -106,7 +106,6 @@ function generateStylesheet(modul /*: ModuleDeclaration */) {
 
 function generateModule(modul /*: ModuleDeclaration */) {
   const filename = modul.name.replace(".", path.sep) + ".css";
-  // ("homepage.css", DEPRECATED.Css.File.compile[Homepage.css])
   return '( "' + filename + '", ' + generateStylesheet(modul) + " )";
 }
 
