@@ -54,16 +54,19 @@ function generateMain(modules /*: Array<ModuleDeclaration> */) {
   const end =
     "type alias FileStructure = List ( String, String )\n\n\n" +
 
+    "model : Css.Global.Snippet\n" + // We do this to defeat dead code elimination. Otherwise, Css.Global.class won't be available!
+    "model = Css.Global.class \"\" []\n\n\n" +
+
     "port files : FileStructure -> Cmd msg\n\n\n" +
 
-    "main : Program () () Never\n" +
+    "main : Program () Css.Global.Snippet Never\n" +
     "main =\n" +
     // Note: This must take flags so that `getStructure` is not evaluated on
     // startup. We need it to be delayed by 1 tick so we have a chance for
     // hack-main.js to take effect first!
     "    Platform.worker\n" +
-    "        { init = \\flags -> ( (), files (getFileStructure ()) )\n" +
-    "        , update = \\_ _ -> ( (), Cmd.none )\n" +
+    "        { init = \\flags -> ( model, files (getFileStructure ()) )\n" +
+    "        , update = \\_ _ -> ( model, Cmd.none )\n" +
     "        , subscriptions = \\_ -> Sub.none\n" +
     "        }\n\n\n" +
 
