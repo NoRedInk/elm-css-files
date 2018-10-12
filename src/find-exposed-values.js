@@ -55,7 +55,7 @@ function findExposedValues(
           }
         });
 
-        // Must have at least 1 value of type Test. Otherwise ignore this module.
+        // Must have at least 1 eligible value. Otherwise ignore this module.
         if (eligible.length > 0) {
           return [{ name: mod.moduleName, values: eligible }];
         } else {
