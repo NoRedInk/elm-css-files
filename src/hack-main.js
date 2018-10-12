@@ -8,7 +8,7 @@ module.exports = function hackMain(
     fs.readFile(mainFilename, { encoding: "utf8" }, function(readError, main) {
       if (readError) return reject(readError);
 
-      const injectionPoint = main.lastIndexOf("var Elm = {};");
+      const injectionPoint = main.lastIndexOf("_Platform_export");
 
       // Overwrite the implementation of classToSnippet to extract the styles from
       // the opaque type. This is so that the CLI can access the contents of the
