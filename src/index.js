@@ -89,6 +89,10 @@ module.exports = function(
       [cssSourceDir],
       true
     ).then(function(modules) {
+			if (modules.length === 0) {
+				return Promise.reject("I found no exposed styles to compile! Is your css/ directory set up properly?");
+			}
+
       return Promise.all(
         [writeMain(mainFilename, modules)].concat(
           modules.map(function(modul) {
