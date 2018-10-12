@@ -47,11 +47,19 @@ function findExposedValues(
         var eligible = _.flatMap(_.toPairs(mod.interface.types), function(pair) {
           var name = pair[0];
           var annotation = pair[1].annotation;
-          var signature = annotation.module + '.' + annotation.name
-          if (types.indexOf(signature) === -1) {
+
+          if (typeof annotation.lambda === "object") {
+            // Functions are never eligible!
             return [];
           } else {
-            return { name: typ.name, signature: typ.signature };
+            var moduleName = annotation.moduleName.module;
+            var signature = moduleName + '.' + annotation.name
+
+            if (types.indexOf(signature) === -1) {
+                return [];
+            } else {
+                return [{name: name, signature: signature}];
+            }
           }
         });
 
