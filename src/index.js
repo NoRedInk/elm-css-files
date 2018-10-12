@@ -161,17 +161,6 @@ function writeResult(outputDir) {
   };
 }
 
-function reportFailures(failures) {
-  return (
-    "The following errors occurred during compilation:\n\n" +
-    failures
-      .map(function(result) {
-        return result.filename + ": " + result.content;
-      })
-      .join("\n\n")
-  );
-}
-
 function compileEmitter(src, options) {
   return new Promise(function(resolve, reject) {
     compile(src, options).on("close", function(exitCode) {
