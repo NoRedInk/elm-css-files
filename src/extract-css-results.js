@@ -26,25 +26,7 @@ module.exports = function extractCssResults(dest) {
     var worker = stylesheetsModule.init(null);
 
     worker.ports[stylesheetsPort].subscribe(function(stylesheets) {
-      var failures = stylesheets.filter(function(result) {
-        return !result.success;
-      });
-
-      return failures.length > 0
-        ? reject(reportFailures(failures))
-        : resolve(stylesheets);
+      resolve(stylesheets);
     });
   });
 };
-
-function reportFailures(failures) {
-  return (
-    "The following errors occurred during compilation:\n\n" +
-    failures
-      .map(function(result) {
-        return result.filename + ": " + result.content;
-      })
-      .join("\n\n")
-  );
-}
-

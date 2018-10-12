@@ -28,7 +28,7 @@ elmCss(process.cwd(), program.output, program.pathToMake)
   .then(function(results) {
     console.log(chalk.green("Success! I created these css files:"));
     results.forEach(function(result) {
-      console.log(chalk.blue("- " + result.filename));
+      console.log(chalk.blue("- " + result[0]));
     });
   })
   .catch(function(error) {
