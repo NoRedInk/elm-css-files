@@ -15,7 +15,7 @@ module.exports = function hackMain(
       // opaque type, but library consumers cannot. This enforces the guarantee that
       // nobody can depend on the contents of these values--which they never should!
       const injection =
-        "author$project$Main$classToSnippet = F2(function(className, styles) { return A2(rtfeldman$elm_css$Css_Global$class, className, styles.a); });";
+        "author$project$Main$classToSnippet = F2(function(className, styles) { return A2(rtfeldman$elm_css$Css$Global$class, className, styles.a); });";
 
       const newMain = [
         main.slice(0, injectionPoint),
