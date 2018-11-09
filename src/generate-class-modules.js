@@ -41,14 +41,14 @@ function declarationForValue(
 }
 
 function isUniqueSvgClass(signature) {
-  return signature === "DEPRECATED.Css.File.UniqueSvgClass";
+  return signature === "Css.File.UniqueSvgClass";
 }
 
 function declarationsForModule(modul /*: ModuleDeclaration */) {
   return modul.values
     .filter(function(value) {
       return (
-        value.signature === "DEPRECATED.Css.File.UniqueClass" ||
+        value.signature === "Css.File.UniqueClass" ||
         isUniqueSvgClass(value.signature)
       );
     })

@@ -84,9 +84,9 @@ module.exports = function(
 
     return findExposedValues(
       [
-        "DEPRECATED.Css.File.UniqueClass",
-        "DEPRECATED.Css.File.UniqueSvgClass",
-        "Css.Foreign.Snippet"
+        "Css.File.UniqueClass",
+        "Css.File.UniqueSvgClass",
+        "Css.Global.Snippet"
       ],
       readElmiPath,
       generatedDir,
