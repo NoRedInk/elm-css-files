@@ -144,7 +144,7 @@ function writeResults(outputDir) {
 function writeResult(outputDir) {
   return function(result) {
     return new Promise(function(resolve, reject) {
-      const filename = path.join(outputDir, result.filename);
+      const filename = path.join(outputDir, result[0]);
       // It's important to call path.dirname explicitly,
       // because result.filename can have directories in it!
       const directory = path.dirname(filename);
@@ -152,7 +152,7 @@ function writeResult(outputDir) {
       mkdirp(directory, function(dirError) {
         if (dirError) return reject(dirError);
 
-        fs.writeFile(filename, result.content + "\n", function(
+        fs.writeFile(filename, result[1] + "\n", function(
           fileError,
           file
         ) {
@@ -163,17 +163,6 @@ function writeResult(outputDir) {
       });
     });
   };
-}
-
-function reportFailures(failures) {
-  return (
-    "The following errors occurred during compilation:\n\n" +
-    failures
-      .map(function(result) {
-        return result.filename + ": " + result.content;
-      })
-      .join("\n\n")
-  );
 }
 
 function compileEmitter(src, options) {
