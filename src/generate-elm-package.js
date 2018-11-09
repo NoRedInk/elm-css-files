@@ -1,51 +1,15 @@
 //@flow
 const path = require("path"),
-  fs = require("fs-extra"),
-  os = require("os"),
-  spawn = require("cross-spawn");
-
-function installDeps(pathToElm, cwd) {
-  return new Promise(function (resolve, reject) {
-    var process = spawn(pathToElm || 'elm', ['install', 'elm/json'], { cwd: cwd });
-    var jsonStr = "";
-    var stderrStr = "";
-
-    process.stdout.on("data", function(data) {
-      jsonStr += data;
-    });
-
-    process.stderr.on("data", function(data) {
-      stderrStr += data;
-    });
-
-    process.on("close", function(code) {
-      if (stderrStr !== "") {
-        reject(stderrStr);
-      } else if (code !== 0) {
-        reject("Finding test interfaces failed, exiting with code " + code);
-      }
-      else {
-        resolve()
-      }
-    });
-
-    // `elm install` has no --yes, and will prompt for a [Yn] input
-    // we send EOL to get the default `Y`
-    process.stdin.setEncoding("utf-8");
-    process.stdin.write(os.EOL);
-    process.stdin.end();
-  })
-}
+  fs = require("fs-extra");
 
 module.exports = function writeGeneratedElmPackage(
-  pathToElm /*: string*/,
   generatedDir /*:string */,
   generatedSrc /*: string */,
   originalElmPackageDir /*: string */
 ) {
   const originalElmPackage = path.join(
     originalElmPackageDir,
-    "elm.json"
+    "elm-package.json"
   );
 
   return fs.readJson(originalElmPackage).then(function(elmPackageContents) {
@@ -61,21 +25,18 @@ module.exports = function writeGeneratedElmPackage(
       generatedSrc
     ].concat(sourceDirs);
 
-    // Generate the new elm.json
+    // Generate the new elm-package.json
     return new Promise(function(resolve, reject) {
       fs.writeFile(
-        path.join(generatedDir, "elm.json"),
+        path.join(generatedDir, "elm-package.json"),
         JSON.stringify(elmPackageContents, null, 4),
         function(writeError) {
           if (writeError)
-            reject("Error writing generated elm.json: " + writeError);
+            reject("Error writing generated elm-package.json: " + writeError);
 
-          resolve();
+          resolve(elmPackageContents["repository"]);
         }
       );
-    })
-    .then(function () {
-      return installDeps(pathToElm, generatedDir)
     });
   });
 };

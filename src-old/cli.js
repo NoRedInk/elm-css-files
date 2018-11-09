@@ -19,7 +19,7 @@ program
   .option("-m, --pathToMake [pathToMake]", "(optional) path to elm-make")
   .parse(process.argv);
 
-const headline = "elm-css " + pkg.version;
+const headline = "elm-css-files " + pkg.version;
 const bar = _.repeat("-", headline.length);
 
 console.log("\n" + headline + "\n" + bar + "\n");
@@ -28,7 +28,7 @@ elmCss(process.cwd(), program.output, program.pathToMake)
   .then(function(results) {
     console.log(chalk.green("Success! I created these css files:"));
     results.forEach(function(result) {
-      console.log(chalk.blue("- " + result.filename));
+      console.log(chalk.blue("- " + result[0]));
     });
   })
   .catch(function(error) {

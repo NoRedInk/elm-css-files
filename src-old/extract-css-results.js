@@ -4,7 +4,7 @@ const stylesheetsPort = "files";
 
 module.exports = function extractCssResults(dest) {
   return new Promise(function(resolve, reject) {
-    var Elm = require(dest);
+    var Elm = require(dest).Elm;
 
     /*
       If you have a nested stylesheet Elm module like "My.Nested.Stylesheet"
@@ -23,16 +23,10 @@ module.exports = function extractCssResults(dest) {
       starting with the Elm object itself
       */
     var stylesheetsModule = Elm.Main;
-    var worker = stylesheetsModule.worker(null);
+    var worker = stylesheetsModule.init(null);
 
     worker.ports[stylesheetsPort].subscribe(function(stylesheets) {
-      var failures = stylesheets.filter(function(result) {
-        return !result.success;
-      });
-
-      return failures.length > 0
-        ? reject(reportFailures(failures))
-        : resolve(stylesheets);
+      resolve(stylesheets);
     });
   });
 };

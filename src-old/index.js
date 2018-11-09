@@ -4,26 +4,24 @@ const _ = require("lodash"),
   path = require("path"),
   glob = require("glob"),
   mkdirp = require("mkdirp"),
-  findExposedValues = require("./js/find-exposed-values").findExposedValues,
-  writeGeneratedElmPackage = require("./js/generate-elm-package"),
-  writeMain = require("./js/generate-main").writeMain,
-  writeFile = require("./js/generate-class-modules").writeFile,
-  findElmFiles = require("./js/find-elm-files"),
-  compileAll = require("./js/compile-all"),
+  findExposedValues = require("./find-exposed-values").findExposedValues,
+  writeGeneratedElmPackage = require("./generate-elm-package"),
+  writeMain = require("./generate-main").writeMain,
+  writeFile = require("./generate-class-modules").writeFile,
+  findElmFiles = require("./find-elm-files"),
+  compileAll = require("./compile-all"),
   fs = require("fs-extra"),
   compile = require("node-elm-compiler").compile,
-  extractCssResults = require("./js/extract-css-results.js"),
-  hackMain = require("./js/hack-main.js");
+  extractCssResults = require("./extract-css-results.js"),
+  hackMain = require("./hack-main.js");
 
 const binaryExtension = process.platform === "win32" ? ".exe" : "";
-const readElmiPath =
-  path.join(__dirname, "bin", "elm-interface-to-json") + binaryExtension;
 const jsEmitterFilename = "emitter.js";
 
 module.exports = function(
   projectDir /*: string*/,
   outputDir /*: string */,
-  pathToMake /*: ?string */
+  pathToElm /*: ?string */
 ) {
   const cssSourceDir = path.join(projectDir, "css");
   const cssElmPackageJson = path.join(cssSourceDir, "elm-package.json");
@@ -40,7 +38,7 @@ module.exports = function(
     "elm-stuff",
     "generated-code",
     "rtfeldman",
-    "elm-css"
+    "elm-css-files"
   );
 
   // Symlink our existing elm-stuff into the generated code,
@@ -76,24 +74,25 @@ module.exports = function(
   });
 
   return Promise.all([
-    writeGeneratedElmPackage(generatedDir, generatedSrc, cssSourceDir),
+    writeGeneratedElmPackage(pathToElm, generatedDir, generatedSrc, cssSourceDir),
     makeGeneratedSrcDir,
-    compileAll(pathToMake, cssSourceDir, elmFilePaths)
+    compileAll(pathToElm, cssSourceDir, elmFilePaths)
   ]).then(function(promiseOutputs) {
-    const repository /*: string */ = promiseOutputs[0];
-
     return findExposedValues(
       [
-        "DEPRECATED.Css.File.UniqueClass",
-        "DEPRECATED.Css.File.UniqueSvgClass",
-        "Css.Foreign.Snippet"
+        "Css.File.UniqueClass",
+        "Css.File.UniqueSvgClass",
+        "Css.Global.Snippet"
       ],
-      readElmiPath,
       generatedDir,
       elmFilePaths,
       [cssSourceDir],
       true
     ).then(function(modules) {
+			if (modules.length === 0) {
+				return Promise.reject("I found no exposed styles to compile! Is your css/ directory set up properly?");
+			}
+
       return Promise.all(
         [writeMain(mainFilename, modules)].concat(
           modules.map(function(modul) {
@@ -103,10 +102,9 @@ module.exports = function(
       ).then(function() {
         return emit(
           mainFilename,
-          repository,
           path.join(generatedDir, jsEmitterFilename),
           generatedDir,
-          pathToMake
+          pathToElm
         ).then(writeResults(outputDir));
       });
     });
@@ -115,20 +113,18 @@ module.exports = function(
 
 function emit(
   src /*: string */,
-  repository /*: string */,
   dest /*: string */,
   cwd /*: string */,
-  pathToMake /*: ?string */
+  pathToElm /*: ?string */
 ) {
   // Compile the js file.
   return compileEmitter(src, {
     output: dest,
-    yes: true,
     cwd: cwd,
-    pathToMake: pathToMake
+    pathToElm: pathToElm
   })
     .then(function() {
-      return hackMain(repository, dest);
+      return hackMain(dest);
     })
     .then(function() {
       return extractCssResults(dest);
@@ -144,7 +140,7 @@ function writeResults(outputDir) {
 function writeResult(outputDir) {
   return function(result) {
     return new Promise(function(resolve, reject) {
-      const filename = path.join(outputDir, result.filename);
+      const filename = path.join(outputDir, result[0]);
       // It's important to call path.dirname explicitly,
       // because result.filename can have directories in it!
       const directory = path.dirname(filename);
@@ -152,7 +148,7 @@ function writeResult(outputDir) {
       mkdirp(directory, function(dirError) {
         if (dirError) return reject(dirError);
 
-        fs.writeFile(filename, result.content + "\n", function(
+        fs.writeFile(filename, result[1] + "\n", function(
           fileError,
           file
         ) {
@@ -163,17 +159,6 @@ function writeResult(outputDir) {
       });
     });
   };
-}
-
-function reportFailures(failures) {
-  return (
-    "The following errors occurred during compilation:\n\n" +
-    failures
-      .map(function(result) {
-        return result.filename + ": " + result.content;
-      })
-      .join("\n\n")
-  );
 }
 
 function compileEmitter(src, options) {
