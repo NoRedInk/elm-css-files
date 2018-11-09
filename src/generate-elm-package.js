@@ -61,7 +61,7 @@ module.exports = function writeGeneratedElmPackage(
       generatedSrc
     ].concat(sourceDirs);
 
-    // Generate the new elm-package.json
+    // Generate the new elm.json
     return new Promise(function(resolve, reject) {
       fs.writeFile(
         path.join(generatedDir, "elm.json"),
