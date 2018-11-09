@@ -74,9 +74,13 @@ function generateMain(modules /*: Array<ModuleDeclaration> */) {
     "classToSnippet str class =\n" +
     "    classToSnippet str class\n\n\n" + // This is just to make type-checking pass. We'll splice in a useful implementation after emitting.
 
+    "stylesheetToSnippetList : a -> List Css.Global.Snippet\n" +
+    "stylesheetToSnippetList stylesheet =\n" +
+    "    stylesheetToSnippetList stylesheet\n\n\n" +
+
     "globalStyleToString : Html.Styled.Html msg -> String\n" +
     "globalStyleToString node =\n" +
-    "    \"\"\n"; // This is just to make type-checking pass. We'll splice in a useful implementation after emitting.
+    "    \"\"\n";
 
   return ["port module Main exposing (main)", imports, fileStructure, end].join(
     "\n\n\n"
@@ -86,24 +90,29 @@ function generateMain(modules /*: Array<ModuleDeclaration> */) {
 function generateStylesheet(modul /*: ModuleDeclaration */) {
   const entries = modul.values.map(function(value) {
     switch (value.signature) {
+      case "Css.File.Stylesheet":
+        return "stylesheetToSnippetList " + modul.name + "." + value.name;
+
       case "Css.Global.Snippet":
-        return modul.name + "." + value.name;
+        return "[ " + modul.name + "." + value.name + " ]";
+
       case "Css.File.UniqueClass":
       case "Css.File.UniqueSvgClass":
         const className = classNameForValue(modul.name, value.name);
 
         return (
-          'classToSnippet "' + className + '" ' + modul.name + "." + value.name
+          '[ classToSnippet "' + className + '" ' + modul.name + "." + value.name + ' ]'
         );
       default:
         throw Error("Unsupported signature " + value.signature);
     }
   });
 
+
   return (
-    "globalStyleToString (Css.Global.global [ " +
+    "globalStyleToString (Css.Global.global (List.concat [ " +
     entries.join(", ") +
-    " ])"
+    " ]))"
   );
 }
 

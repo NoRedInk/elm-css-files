@@ -1,13 +1,21 @@
-module Dreamwriter.Editor exposing (editor, headerBar, purpleCircle)
+module Dreamwriter.Editor exposing (editor, headerBar, purpleCircle, testStylesheet)
 
 import Css exposing (..)
-import Css.File exposing (UniqueClass, UniqueSvgClass, uniqueClass, uniqueSvgClass)
+import Css.File exposing (UniqueClass, Stylesheet, UniqueSvgClass, stylesheet, uniqueClass, uniqueSvgClass)
 import Css.Global exposing (..)
 
 
 editor : Snippet
 editor =
     div [ color (hex "ff0000") ]
+
+
+testStylesheet : Stylesheet
+testStylesheet =
+    stylesheet
+        [ header [ height (px 40) ]
+        , footer [ height (px 100) ]
+        ]
 
 
 headerBar : UniqueClass

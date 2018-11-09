@@ -22,6 +22,9 @@ module.exports = function hackMain(
         "Main$classToSnippet = F2(function(className, styles) { return A2(_rtfeldman$elm_css$Css_Global$class, className, styles._0); });\n" +
 
         namespacer +
+        "Main$stylesheetToSnippetList = function(stylesheet) { return stylesheet._0 }\n" +
+
+        namespacer +
         "Main$globalStyleToString = function(node) {\n" +
 				"  return node._0.children[0].text;\n" +
 				"}\n";
