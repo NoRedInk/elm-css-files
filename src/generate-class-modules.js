@@ -49,7 +49,8 @@ function declarationsForModule(modul /*: ModuleDeclaration */) {
     .filter(function(value) {
       return (
         value.signature === "Css.File.UniqueClass" ||
-        isUniqueSvgClass(value.signature)
+        isUniqueSvgClass(value.signature) ||
+        value.signature === "Css.File.Stylesheet"
       );
     })
     .map(function(value) {

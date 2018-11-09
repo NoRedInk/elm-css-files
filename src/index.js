@@ -82,7 +82,8 @@ module.exports = function(
       [
         "Css.File.UniqueClass",
         "Css.File.UniqueSvgClass",
-        "Css.Global.Snippet"
+        "Css.File.Stylesheet",
+        "Css.Global.Snippet",
       ],
       generatedDir,
       elmFilePaths,

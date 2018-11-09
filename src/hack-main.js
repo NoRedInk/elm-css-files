@@ -17,6 +17,8 @@ module.exports = function hackMain(
       const injection =
         "author$project$Main$classToSnippet = F2(function(className, styles) { return A2(rtfeldman$elm_css$Css$Global$class, className, styles.a); });\n" +
 
+        "author$project$Main$stylesheetToSnippetList = function(stylesheet) { return stylesheet.a }\n" +
+
         "author$project$Main$globalStyleToString = function(node) {\n" +
 				// First, find the nested object.
 				"  var nestedObject;\n" +

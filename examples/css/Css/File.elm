@@ -1,6 +1,23 @@
-module Css.File exposing (UniqueClass(..), UniqueSvgClass(..), uniqueClass, uniqueSvgClass)
+module Css.File exposing (Stylesheet, UniqueClass, UniqueSvgClass, stylesheet, uniqueClass, uniqueSvgClass)
 
 import Css exposing (Style)
+import Css.Global exposing (Snippet)
+
+
+{-| Many snippets grouped into a single declaration.
+-}
+type Stylesheet
+    = Stylesheet (List Snippet)
+
+
+{-| Generate styles for many snippets grouped into a single
+stylesheet. This helps with code organization, but is not
+really different from having multiple Snippet values exposed
+from a module.
+-}
+stylesheet : List Snippet -> Stylesheet
+stylesheet =
+    Stylesheet
 
 
 {-| Styles scoped under an automatically-generated class.
