@@ -19,35 +19,11 @@ module.exports = function hackMain(
       // nobody can depend on the contents of these values--which they never should!
       const injection =
         namespacer +
-        "Main$classToSnippet = F2(function(className, styles) { return A2(_rtfeldman$elm_css$Css_Global$class, className, styles._0); });\n" +
+        "Main$classToSnippet = F2(function(className, styles) { console.log(className, styles); return A2(_rtfeldman$elm_css$Css_Global$class, className, styles._0); });\n" +
 
         namespacer +
         "Main$globalStyleToString = function(node) {\n" +
-				// First, find the nested object.
-				"  var nestedObject;\n" +
-
-				"  for (var key in node) {\n" +
-				"    if (typeof node[key] === 'object') {\n" +
-				"      nestedObject = node[key];\n" +
-				"    }\n" +
-				"  }\n" +
-
-				"  var children;\n" +
-
-				"  for (var key in nestedObject) {\n" +
-				"    if (nestedObject[key] instanceof Array) {\n" +
-				"      children = nestedObject[key];\n" +
-				"    }\n" +
-				"  }\n" +
-
-				"  var child=children[0];\n" +
-
-				"  for (var key in child) {\n" +
-				"    if (typeof child[key] === 'string') {\n" +
-				"      return child[key];\n" +
-				"    }\n" +
-				"  }\n" +
-
+				"  return node._0.children[0].text;\n" +
 				"}\n";
 
       const newMain = [
