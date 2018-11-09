@@ -4,7 +4,7 @@ module.exports = function(verbose /*: ?bool */) {
   const binstall = require("binstall");
   const path = require("path");
   const fs = require("fs");
-  const packageInfo = require("./package.json");
+  const packageInfo = require("../package.json");
 
   // Use major.minor.patch from version string - e.g. "1.2.3" from "1.2.3-alpha"
   const binVersion = packageInfo.version.match(/^(\d+\.\d+\.\d+).*$/)[1];

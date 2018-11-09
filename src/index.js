@@ -4,16 +4,16 @@ const _ = require("lodash"),
   path = require("path"),
   glob = require("glob"),
   mkdirp = require("mkdirp"),
-  findExposedValues = require("./js/find-exposed-values").findExposedValues,
-  writeGeneratedElmPackage = require("./js/generate-elm-package"),
-  writeMain = require("./js/generate-main").writeMain,
-  writeFile = require("./js/generate-class-modules").writeFile,
-  findElmFiles = require("./js/find-elm-files"),
-  compileAll = require("./js/compile-all"),
+  findExposedValues = require("./find-exposed-values").findExposedValues,
+  writeGeneratedElmPackage = require("./generate-elm-package"),
+  writeMain = require("./generate-main").writeMain,
+  writeFile = require("./generate-class-modules").writeFile,
+  findElmFiles = require("./find-elm-files"),
+  compileAll = require("./compile-all"),
   fs = require("fs-extra"),
   compile = require("node-elm-compiler").compile,
-  extractCssResults = require("./js/extract-css-results.js"),
-  hackMain = require("./js/hack-main.js");
+  extractCssResults = require("./extract-css-results.js"),
+  hackMain = require("./hack-main.js");
 
 const binaryExtension = process.platform === "win32" ? ".exe" : "";
 const readElmiPath =

@@ -3,7 +3,7 @@
 const _ = require("lodash"),
   path = require("path"),
   firstline = require("firstline"),
-  installReadElmi = require("../installer"),
+  installReadElmi = require("./installer.js"),
   finder = require("./read-exposed.js"),
   fs = require("fs-extra"),
   spawn = require("cross-spawn");
