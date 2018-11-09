@@ -36,3 +36,14 @@ module.exports = function extractCssResults(dest) {
     });
   });
 };
+
+function reportFailures(failures) {
+  return (
+    "The following errors occurred during compilation:\n\n" +
+    failures
+      .map(function(result) {
+        return result.filename + ": " + result.content;
+      })
+      .join("\n\n")
+  );
+}
