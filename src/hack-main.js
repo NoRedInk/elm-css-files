@@ -15,11 +15,18 @@ module.exports = function hackMain(
       // opaque type, but library consumers cannot. This enforces the guarantee that
       // nobody can depend on the contents of these values--which they never should!
       const injection =
-        "author$project$Main$classToSnippet = F2(function(className, styles) { return A2(rtfeldman$elm_css$Css$Global$class, className, styles.a); });\n" +
+        "if (typeof author$project$Main$classToSnippet !== 'undefinded') {\n" +
+        "  author$project$Main$classToSnippet = F2(function(className, styles) { return A2(rtfeldman$elm_css$Css$Global$class, className, styles.a); });\n" +
+        "}\n\n" +
 
-        "author$project$Main$stylesheetToSnippetList = function(stylesheet) { return stylesheet.a }\n" +
+        "if (typeof author$project$Main$stylesheetToSnippetList === 'undefined') {\n" +
+        "  author$project$Main$stylesheetToSnippetList = function(stylesheet) { return stylesheet.a }\n" +
+        "}\n\n" +
 
+        "if (typeof author$project$Main$globalStyleToString === 'undefined') {\n" +
         "author$project$Main$globalStyleToString = function(node) {\n" +
+        "}\n\n" +
+
 				// First, find the nested object.
 				"  var nestedObject;\n" +
 
