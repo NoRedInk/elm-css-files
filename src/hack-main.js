@@ -24,7 +24,7 @@ module.exports = function hackMain(
         "}\n\n" +
 
         "if (typeof author$project$Main$globalStyleToString === 'undefined') {\n" +
-        "author$project$Main$globalStyleToString = function(node) {\n" +
+        "  author$project$Main$globalStyleToString = function(node) {\n" +
         "}\n\n" +
 
 				// First, find the nested object.
