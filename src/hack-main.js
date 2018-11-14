@@ -19,40 +19,38 @@ module.exports = function hackMain(
         "  author$project$Main$classToSnippet = F2(function(className, styles) { return A2(rtfeldman$elm_css$Css$Global$class, className, styles.a); });\n" +
         "}\n\n" +
 
-        "if (typeof author$project$Main$stylesheetToSnippetList === 'undefined') {\n" +
+        "if (typeof author$project$Main$stylesheetToSnippetList !== 'undefined') {\n" +
         "  author$project$Main$stylesheetToSnippetList = function(stylesheet) { return stylesheet.a }\n" +
         "}\n\n" +
 
-        "if (typeof author$project$Main$globalStyleToString === 'undefined') {\n" +
+        "if (typeof author$project$Main$globalStyleToString !== 'undefined') {\n" +
         "  author$project$Main$globalStyleToString = function(node) {\n" +
-        "}\n\n" +
-
 				// First, find the nested object.
-				"  var nestedObject;\n" +
+				"    var nestedObject;\n" +
 
-				"  for (var key in node) {\n" +
-				"    if (typeof node[key] === 'object') {\n" +
-				"      nestedObject = node[key];\n" +
+				"    for (var key in node) {\n" +
+				"      if (typeof node[key] === 'object') {\n" +
+				"        nestedObject = node[key];\n" +
+				"      }\n" +
 				"    }\n" +
-				"  }\n" +
 
-				"  var children;\n" +
+				"    var children;\n" +
 
-				"  for (var key in nestedObject) {\n" +
-				"    if (nestedObject[key] instanceof Array) {\n" +
-				"      children = nestedObject[key];\n" +
+				"    for (var key in nestedObject) {\n" +
+				"      if (nestedObject[key] instanceof Array) {\n" +
+				"        children = nestedObject[key];\n" +
+				"      }\n" +
 				"    }\n" +
-				"  }\n" +
 
-				"  var child=children[0];\n" +
+				"    var child=children[0];\n" +
 
-				"  for (var key in child) {\n" +
-				"    if (typeof child[key] === 'string') {\n" +
-				"      return child[key];\n" +
+				"    for (var key in child) {\n" +
+				"      if (typeof child[key] === 'string') {\n" +
+				"        return child[key];\n" +
+				"      }\n" +
 				"    }\n" +
-				"  }\n" +
-
-				"}\n";
+        "  }\n" +
+        "}";
 
       const newMain = [
         main.slice(0, injectionPoint),
