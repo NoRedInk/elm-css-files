@@ -1,0 +1,20 @@
+.Dreamwriter-Editor-headerBar {
+    color:#ccbba9;
+    text-decoration:none;
+}
+
+.Dreamwriter-Editor-purpleCircle {
+    background-color:#ccbba9;
+}
+
+header {
+    height:40px;
+}
+
+footer {
+    height:100px;
+}
+
+div {
+    color:#ff0000;
+}
