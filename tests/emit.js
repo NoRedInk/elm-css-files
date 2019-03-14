@@ -11,19 +11,26 @@ describe("emitting", function() {
     this.timeout(6000000);
 
     var projectDir = path.join(__dirname, "..", "examples");
-    var outputDir = __dirname;
+    var outputDir = path.join(__dirname, "Dreamwriter");
 
     emitter(projectDir, outputDir).then(function() {
-      var expectedFile = path.join(fixturesDir, "homepage-compiled.css");
-      var expected = fs.readFileSync(expectedFile, {encoding: "utf8"});
-      var actual = fs.readFileSync(path.join(outputDir, "homepage.css"), {encoding: "utf8"});
+      fs.readdir(fixturesDir, function(err, files) {
+         if (err) {
+           console.error("Could not list the directory.", err);
+           process.exit(1);
+         }
 
-      return assert.strictEqual(expected, actual);
+         files.forEach(function(file) {
+           var expected = fs.readFileSync(path.join(fixturesDir, file), {encoding: "utf8"});
+           var actual = fs.readFileSync(path.join(outputDir, file), {encoding: "utf8"});
+           console.log(expected)
+           return assert.strictEqual(expected, actual);
+         })
+      });
     }).then(
       done,
       function(error) {
         done(new Error(error))
-        // setTimeout(assert.fail, 1);
       }
     )
   });
