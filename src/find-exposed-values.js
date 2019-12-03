@@ -43,8 +43,8 @@ function findExposedValues(
         reject("Received invalid JSON from test interface search: " + err);
       }
 
-      var filteredModules = _.flatMap(modules, function(mod) {
-        var eligible = _.flatMap(_.toPairs(mod.interface.types), function(pair) {
+      var filteredModules = _.flatMap(modules.internals, function(mod) {
+        var eligible = _.flatMap(_.toPairs(mod.values), function(pair) {
           var name = pair[0];
           var annotation = pair[1].annotation;
 
@@ -65,7 +65,7 @@ function findExposedValues(
 
         // Must have at least 1 eligible value. Otherwise ignore this module.
         if (eligible.length > 0) {
-          return [{ name: mod.moduleName, values: eligible }];
+          return [{ name: mod.module, values: eligible }];
         } else {
           return [];
         }
