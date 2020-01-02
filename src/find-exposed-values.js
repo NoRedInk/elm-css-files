@@ -30,9 +30,11 @@ function findExposedValues(
 
     process.on("close", function(code) {
       if (stderrStr !== "") {
-        reject(stderrStr);
+        return reject(stderrStr);
       } else if (code !== 0) {
-        reject("Finding test interfaces failed, exiting with code " + code);
+        return reject(
+          "Finding test interfaces failed, exiting with code " + code
+        );
       }
 
       var modules;
@@ -40,7 +42,9 @@ function findExposedValues(
       try {
         modules = JSON.parse(jsonStr);
       } catch (err) {
-        reject("Received invalid JSON from test interface search: " + err);
+        return reject(
+          "Received invalid JSON from test interface search: " + err
+        );
       }
 
       var filteredModules = _.flatMap(modules.internals, function(mod) {
