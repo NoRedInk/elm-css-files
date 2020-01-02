@@ -29,9 +29,7 @@ function findExposedValues(
     });
 
     process.on("close", function(code) {
-      if (stderrStr !== "") {
-        return reject(stderrStr);
-      } else if (code !== 0) {
+      if (code !== 0) {
         return reject(
           "Finding test interfaces failed, exiting with code " + code
         );
@@ -43,7 +41,10 @@ function findExposedValues(
         modules = JSON.parse(jsonStr);
       } catch (err) {
         return reject(
-          "Received invalid JSON from test interface search: " + err
+          "Received invalid JSON from test interface search: " +
+            err +
+            "\nJSON that failed to parse:\n" +
+            jsonStr
         );
       }
 
@@ -57,12 +58,12 @@ function findExposedValues(
             return [];
           } else {
             var moduleName = annotation.moduleName.module;
-            var signature = moduleName + '.' + annotation.name
+            var signature = moduleName + "." + annotation.name;
 
             if (types.indexOf(signature) === -1) {
-                return [];
+              return [];
             } else {
-                return [{name: name, signature: signature}];
+              return [{ name: name, signature: signature }];
             }
           }
         });
