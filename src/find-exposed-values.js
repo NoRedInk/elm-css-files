@@ -32,7 +32,7 @@ function findExposedValues(
       if (stderrStr !== "") {
         reject(stderrStr);
       } else if (code !== 0) {
-        reject(
+        return reject(
           "Finding test interfaces failed, exiting with code " + code
         );
       }
@@ -43,7 +43,7 @@ function findExposedValues(
         modules = JSON.parse(jsonStr);
       } catch (err) {
         console.log(jsonStr);
-        reject(
+        return reject(
           "Received invalid JSON from test interface search: " + err
         );
       }
