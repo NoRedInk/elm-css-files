@@ -42,6 +42,7 @@ function findExposedValues(
       try {
         modules = JSON.parse(jsonStr);
       } catch (err) {
+        console.log(jsonStr);
         return reject(
           "Received invalid JSON from test interface search: " + err
         );
@@ -57,12 +58,12 @@ function findExposedValues(
             return [];
           } else {
             var moduleName = annotation.moduleName.module;
-            var signature = moduleName + '.' + annotation.name
+            var signature = moduleName + "." + annotation.name;
 
             if (types.indexOf(signature) === -1) {
-                return [];
+              return [];
             } else {
-                return [{name: name, signature: signature}];
+              return [{ name: name, signature: signature }];
             }
           }
         });
