@@ -1,6 +1,6 @@
 {
   "name": "@noredink/elm-css-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI to generate .css files from elm-css code.",
   "main": "src/index.js",
   "bin": {
