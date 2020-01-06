@@ -29,10 +29,10 @@ function findExposedValues(
     });
 
     process.on("close", function(code) {
-      if (stderrStr !== "") {
-        reject(stderrStr);
-      } else if (code !== 0) {
-        reject("Finding test interfaces failed, exiting with code " + code);
+      if (code !== 0) {
+        return reject(
+          "Finding test interfaces failed, exiting with code " + code
+        );
       }
 
       var modules;
@@ -40,7 +40,12 @@ function findExposedValues(
       try {
         modules = JSON.parse(jsonStr);
       } catch (err) {
-        reject("Received invalid JSON from test interface search: " + err);
+        return reject(
+          "Received invalid JSON from test interface search: " +
+            err +
+            "\nJSON that failed to parse:\n" +
+            jsonStr
+        );
       }
 
       var filteredModules = _.flatMap(modules.internals, function(mod) {
@@ -53,12 +58,12 @@ function findExposedValues(
             return [];
           } else {
             var moduleName = annotation.moduleName.module;
-            var signature = moduleName + '.' + annotation.name
+            var signature = moduleName + "." + annotation.name;
 
             if (types.indexOf(signature) === -1) {
-                return [];
+              return [];
             } else {
-                return [{name: name, signature: signature}];
+              return [{ name: name, signature: signature }];
             }
           }
         });
