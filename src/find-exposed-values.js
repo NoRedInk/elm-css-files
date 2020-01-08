@@ -3,7 +3,7 @@
 const _ = require("lodash"),
   path = require("path"),
   firstline = require("firstline"),
-  readElmiPath = require("elmi-to-json").paths["elmi-to-json"],
+  readElmiPath = require("elmi-to-json"),
   finder = require("./read-exposed.js"),
   fs = require("fs-extra"),
   spawn = require("cross-spawn");
